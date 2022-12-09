@@ -17,8 +17,26 @@ def get_letters(tile_list):
         letters[i] = tile_list[i].text
     return letters
 
+def sort_letters():
+    for i in range(5):
+        if letter_states[i] == 'correct':
+            letter = driver.find_element(By.CSS_SELECTOR, f"div#good-letters input[data-index='{i}']")
+            letter.send_keys(f"${letters[i]}")
+        elif letter_states[i] == 'absent':
+            bad_letters = driver.find_element(By.CSS_SELECTOR, 'div#bad-letters input:not(.bad)')
+            bad_letters.send_keys(f"${letters[i]}")
+        elif letter_states[i] == 'present':
+            present_letters = driver.find_element(By.CSS_SELECTOR, f"div#valid-letters input[data-index='{i+5}']")
+            present_letters.send_keys(f"${letters[i]}")
 
-FIRST_WORD = 'fixer'
+def get_next_word():
+    time.sleep(2)
+    driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click()
+    time.sleep(2)
+    next_word = driver.find_element(By.CSS_SELECTOR, '#result-cards div.flex-wrap span span').text
+    return next_word
+
+FIRST_WORD = 'fiber'
 driver = webdriver.Chrome('./chromedriver')
 driver.implicitly_wait(0.5)
 driver.get('https://www.nytimes.com/games/wordle/index.html')
@@ -41,5 +59,7 @@ letter_states = get_letter_states(tiles)
 #opens new window and switches to wordle helper
 driver.execute_script("window.open('');")
 driver.switch_to.window(driver.window_handles[1])
-driver.get('https://word.tips/wordle/')
+driver.get('https://www.thewordfinder.com/wordle-solver/')
+time.sleep(2)
+sort_letters()
 time.sleep(1)
