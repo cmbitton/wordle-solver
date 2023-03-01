@@ -1,0 +1,105 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+import time 
+from words import words
+
+possible_words = words
+#gets the state of the letters (correct, present, absent)
+def get_letter_states(tile_list):
+    letter_states = {}
+    for i in range(5):
+        letter_states[i] = tile_list[i].get_attribute('data-state')
+    return letter_states
+
+#gets the value of the letters in the word (a,b,c,d...)
+def get_letters(tile_list):
+    letters = {}
+    for i in range(5):
+        letters[i] = tile_list[i].text
+    return letters
+
+#checks for win
+def check_for_win(letter_states):
+    correct_letters = 0
+    for state in letter_states:
+        if letter_states[state] == "correct":
+            correct_letters += 1
+    if correct_letters == 5:
+        return True
+    
+    #filters word list
+def filter_word_list(list, letters, letter_states, guessed_word):
+    word_list = list
+    for i in range(5):
+        if letters[i].lower() in vowels and letters[i].lower() not in guessed_vowels:
+            guessed_vowels.append(letters[i].lower())
+        if letter_states[i] == "absent":
+            if guessed_word.count(letters[i].lower()) > 1:
+                indexes = [j for j in range(5) if guessed_word.startswith(letters[i].lower(), j)]
+                absent_states = []
+                for num in indexes:
+                    absent_states.append(letter_states[num])
+                if "present" not in absent_states and "correct" not in absent_states:
+                    print(absent_states)
+                    word_list = [word for word in word_list if letters[i].lower() not in word]
+                if "correct" in absent_states or "present" in absent_states:
+                    word_list = [word for word in word_list if letters[i].lower() != word[i]]
+            else:
+                word_list = [word for word in word_list if letters[i].lower() not in word]
+        if letter_states[i] == "correct":
+            word_list = [word for word in word_list if word[i].lower() == letters[i].lower()]
+        if letter_states[i] == "present":
+            word_list = [word for word in word_list if letters[i].lower() in word]
+            word_list = [word for word in word_list if word[i].lower() != letters[i].lower()]
+    return word_list
+
+def select_next_word(list):
+    words = list
+    chosen_word = ""
+    for word in words:
+        for letter in word:
+            if word.count(letter) > 1:
+                break
+        else:
+            chosen_word = word
+    if chosen_word != "":
+        return chosen_word
+    else:
+        return word
+
+
+word = 'slate'
+vowels = ["a", "e", "i", "o", "u"]
+guessed_vowels = []
+driver = webdriver.Chrome('./chromedriver')
+driver.implicitly_wait(0.5)
+driver.maximize_window()
+driver.get('https://www.nytimes.com/games/wordle/index.html')
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+#closes instructions for game
+close_instruction = driver.find_element(By.CSS_SELECTOR, "svg.game-icon")
+close_instruction.click()
+time.sleep(1)
+#clicks body to allow word to be entered
+body = driver.find_element(By.CSS_SELECTOR, "body")
+body.click()
+
+for i in range(6):
+#types in first word
+    body.send_keys(word, Keys.ENTER)
+    time.sleep(3)
+    #grabs all letter boxes (div), letter values (a,b,c,d...), and letter states (absent, present, correct)
+    tiles = driver.find_elements(By.CSS_SELECTOR, f"div[aria-label='Row {i + 1}'] div div")
+    letters = get_letters(tiles)
+    letter_states = get_letter_states(tiles)
+    print(letters, letter_states)
+    print(len(words))
+    words = filter_word_list(words, letters, letter_states, word)
+    print(words)
+    print(len(words))
+    if check_for_win(letter_states):
+        time.sleep(30)
+        quit()
+    word = select_next_word(words)
+

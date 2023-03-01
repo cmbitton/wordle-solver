@@ -43,7 +43,7 @@ def sort_letters():
 
 #gets the next word from wordle helper
 def get_next_word():
-    time.sleep(2)
+    time.sleep(1)
     driver.find_element(By.CSS_SELECTOR, 'a[data-action="search"]').click()
     time.sleep(2)
     next_letters = driver.find_elements(By.CSS_SELECTOR, '#ws-results div.row div.ws-result:first-child span')
@@ -51,7 +51,7 @@ def get_next_word():
     for letter in next_letters:
         next_word += letter.text
     return next_word
-
+       
 #checks for win
 def check_for_win(letter_states):
     correct_letters = 0
@@ -72,14 +72,16 @@ def remove_found_letters():
         for(const letter of validLetters) letter.classList.remove('valid')
         """)
 
-FIRST_WORD = 'stand'
+FIRST_WORD = 'later'
 driver = webdriver.Chrome('./chromedriver')
 driver.implicitly_wait(0.5)
+driver.maximize_window()
 driver.get('https://www.nytimes.com/games/wordle/index.html')
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
 #closes instructions for game
 close_instruction = driver.find_element(By.CSS_SELECTOR, "svg.game-icon")
 close_instruction.click()
-time.sleep(2)
+time.sleep(1)
 #clicks body to allow word to be entered
 body = driver.find_element(By.CSS_SELECTOR, "body")
 body.click()
@@ -124,7 +126,7 @@ if check_for_win(letter_states):
 
 #switch to wordle helper, sort letters, and get next word
 driver.switch_to.window(driver.window_handles[1])
-time.sleep(2)
+time.sleep(1)
 remove_found_letters()
 sort_letters()
 next_word = get_next_word()
@@ -145,7 +147,7 @@ if check_for_win(letter_states):
 
 #switch to wordle helper, sort letters, and get next word
 driver.switch_to.window(driver.window_handles[1])
-time.sleep(2)
+time.sleep(1)
 remove_found_letters()
 sort_letters()
 next_word = get_next_word()
@@ -166,7 +168,7 @@ if check_for_win(letter_states):
 
 #switch to wordle helper, sort letters, and get next word
 driver.switch_to.window(driver.window_handles[1])
-time.sleep(2)
+time.sleep(1)
 remove_found_letters()
 sort_letters()
 next_word = get_next_word()
@@ -187,7 +189,7 @@ if check_for_win(letter_states):
 
 #switch to wordle helper, sort letters, and get next word
 driver.switch_to.window(driver.window_handles[1])
-time.sleep(2)
+time.sleep(1)
 remove_found_letters()
 sort_letters()
 next_word = get_next_word()
