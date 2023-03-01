@@ -32,8 +32,6 @@ def check_for_win(letter_states):
 def filter_word_list(list, letters, letter_states, guessed_word):
     word_list = list
     for i in range(5):
-        if letters[i].lower() in vowels and letters[i].lower() not in guessed_vowels:
-            guessed_vowels.append(letters[i].lower())
         if letter_states[i] == "absent":
             if guessed_word.count(letters[i].lower()) > 1:
                 indexes = [j for j in range(5) if guessed_word.startswith(letters[i].lower(), j)]
@@ -49,6 +47,14 @@ def filter_word_list(list, letters, letter_states, guessed_word):
                 word_list = [word for word in word_list if letters[i].lower() not in word]
         if letter_states[i] == "correct":
             word_list = [word for word in word_list if word[i].lower() == letters[i].lower()]
+            if guessed_word.count(letters[i].lower()) > 1:
+                indexes = [j for j in range(5) if guessed_word.startswith(letters[i].lower(), j)]
+                absent_states = []
+                for num in indexes:
+                    absent_states.append(letter_states[num])
+                if "absent" in absent_states:
+                    word_list = [word for word in word_list if letters[i].lower() not in word[:i] and letters[i].lower() not in word[i+1:]]
+                    
         if letter_states[i] == "present":
             word_list = [word for word in word_list if letters[i].lower() in word]
             word_list = [word for word in word_list if word[i].lower() != letters[i].lower()]
@@ -69,7 +75,7 @@ def select_next_word(list):
         return word
 
 
-word = 'slate'
+word = 'momma'
 vowels = ["a", "e", "i", "o", "u"]
 guessed_vowels = []
 driver = webdriver.Chrome('./chromedriver')
