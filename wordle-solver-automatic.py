@@ -4,7 +4,20 @@ from selenium.webdriver.common.by import By
 import time 
 from words import words
 
-possible_words = words
+letter_values = {'a': 8.46, 'b': 2.48, 'c': 4.16, 'd': 3.45, 'e': 9.83, 'f': 1.92, 'g': 2.79, 'h': 3.52, 'i': 6.03, 'j': 0.25, 'k': 1.89, 'l': 6.02, 'm': 2.78, 'n': 5.12, 'o': 6.27, 'p': 3.22, 'q': 0.27, 'r': 7.79, 's': 5.76, 't': 6.23, 'u': 4.26, 'v': 1.38, 'w': 1.8, 'x': 0.35, 'y': 3.88, 'z': 0.33}
+def calculateHighestValueWord(wordlist):
+    highest_value = 0
+    best_word = ""
+    for word in wordlist:
+        current_value = 0
+        word_set = set(word)
+        for letter in word_set:
+            current_value += letter_values[letter]
+        if current_value > highest_value:
+            best_word = word
+            highest_value = current_value
+    return best_word
+
 #gets the state of the letters (correct, present, absent)
 def get_letter_states(tile_list):
     letter_states = {}
@@ -41,7 +54,7 @@ def filter_word_list(list, letters, letter_states, guessed_word):
                 if "present" not in absent_states and "correct" not in absent_states:
                     print(absent_states)
                     word_list = [word for word in word_list if letters[i].lower() not in word]
-                if "correct" in absent_states or "present" in absent_states:
+                else:
                     word_list = [word for word in word_list if letters[i].lower() != word[i]]
             else:
                 word_list = [word for word in word_list if letters[i].lower() not in word]
@@ -60,22 +73,7 @@ def filter_word_list(list, letters, letter_states, guessed_word):
             word_list = [word for word in word_list if word[i].lower() != letters[i].lower()]
     return word_list
 
-def select_next_word(list):
-    words = list
-    chosen_word = ""
-    for word in words:
-        for letter in word:
-            if word.count(letter) > 1:
-                break
-        else:
-            chosen_word = word
-    if chosen_word != "":
-        return chosen_word
-    else:
-        return word
-
-
-word = 'momma'
+word = 'zizit'
 vowels = ["a", "e", "i", "o", "u"]
 guessed_vowels = []
 driver = webdriver.Chrome('./chromedriver')
@@ -107,5 +105,4 @@ for i in range(6):
     if check_for_win(letter_states):
         time.sleep(30)
         quit()
-    word = select_next_word(words)
-
+    word = calculateHighestValueWord(words)

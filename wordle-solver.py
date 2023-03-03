@@ -72,7 +72,7 @@ def remove_found_letters():
         for(const letter of validLetters) letter.classList.remove('valid')
         """)
 
-FIRST_WORD = 'later'
+FIRST_WORD = 'momma'
 driver = webdriver.Chrome('./chromedriver')
 driver.implicitly_wait(0.5)
 driver.maximize_window()
