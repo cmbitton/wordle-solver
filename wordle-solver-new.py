@@ -56,7 +56,7 @@ class Main:
     def __init__(self):
         self.wordle_guess = STARTING_WORD
         self.word_list = words
-        self.driver = webdriver.Chrome('./chromedriver')
+        self.driver = webdriver.Chrome('/chromedriver')
 
     def open_wordle_website(self):
         self.driver.implicitly_wait(0.5)
