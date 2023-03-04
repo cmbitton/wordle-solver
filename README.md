@@ -10,7 +10,7 @@ Automated Wordle Solver is a web automation bot written in Python that utilizes 
 ## How To Use
 
 Download the project folder and install all requirements. Simply run the wordle-solver-automatic.py file to
-start the bot with the default starting word. If you want to change the starting word, simple change the "word"
+start the bot with the default starting word. If you want to change the starting word, simple change the "STARTING_WORD"
 variable within the file.
 
 <b>Note: </b>The wordle-solver-old.py program uses a 3rd part website to filter the word list, and is no longer supported.
