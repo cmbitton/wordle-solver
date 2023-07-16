@@ -64,6 +64,11 @@ class Main:
         self.driver.get('https://www.nytimes.com/games/wordle/index.html')
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
 
+    def press_play(self):
+        play_button = self.driver.find_element(By.CSS_SELECTOR, "button[data-testid=Play]")
+        play_button.click()
+        time.sleep(1)
+
     def close_instructions(self):
         close_instruction = self.driver.find_element(By.CSS_SELECTOR, "svg.game-icon")
         close_instruction.click()
@@ -121,6 +126,7 @@ class Main:
     
     def run_main(self):
         self.open_wordle_website()
+        self.press_play()
         self.close_instructions()
         for i in range(6):
             self.enter_word()
